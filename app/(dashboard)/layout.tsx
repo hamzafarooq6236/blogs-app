@@ -19,7 +19,7 @@ export default async function SidebarLayout({
                         <SidebarTrigger />
                     </header>
 
-                    <main className="flex min-h-screen items-center justify-center">
+                    <main className="">
                         {children}
                     </main>
                 </SidebarInset>

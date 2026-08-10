@@ -79,7 +79,7 @@ const data = {
     },
     {
       title: "Write a Blog",
-      url: "/dashboard/blogs/new",
+      url: "/blogs/new",
       icon: (
         <NotebookPen
         />

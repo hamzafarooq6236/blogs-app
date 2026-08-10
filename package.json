@@ -12,6 +12,8 @@
     "@auth/drizzle-adapter": "^1.11.3",
     "@base-ui/react": "^1.7.0",
     "@sendgrid/mail": "^8.1.6",
+    "@tiptap/extension-highlight": "^3.29.2",
+    "@tiptap/extension-text-align": "^3.29.2",
     "@tiptap/pm": "^3.29.2",
     "@tiptap/react": "^3.29.2",
     "@tiptap/starter-kit": "^3.29.2",
