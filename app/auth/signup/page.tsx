@@ -13,8 +13,14 @@ interface FormInputs {
 export default function SignIn() {
     const { register, formState: { errors }, handleSubmit } = useForm<FormInputs>();
 
-    function submit(data: FormInputs) {
-        console.log(data);  
+    async function submit(data: FormInputs) {
+        const res = await fetch("/api/auth/signup",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify(data)
+        })  
 
     }
     return (

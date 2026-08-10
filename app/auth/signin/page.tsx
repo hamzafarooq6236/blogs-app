@@ -2,6 +2,8 @@
 import { signIn } from "next-auth/react"
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface FormInputs {
     email: string;
@@ -11,14 +13,33 @@ interface FormInputs {
 
 export default function SignIn() {
     const { register, formState: { errors }, handleSubmit } = useForm<FormInputs>();
+    const router = useRouter();
+    const [authError, setAuthError] = useState<string | null>(null);
 
-    function submit(data: FormInputs) {
-        console.log(data);  
+    async function submit(data: FormInputs) {
+        setAuthError(null);
+        try {
+            const res = await signIn("credentials", {
+                email: data.email,
+                password: data.password,
+                redirect: false,
+            });
 
+            if (res?.error) {
+                setAuthError("Invalid email or password");
+            } else {
+                router.push("/dashboard");
+                router.refresh();
+            }
+        } catch {
+            setAuthError("Invalid email or password");
+        }
     }
+
     return (
         <div className="min-h-screen flex flex-col justify-center items-center gap-2">
             <form onSubmit={handleSubmit(submit)} className="rounded-2xl text-black border-2 p-3 flex flex-col justify-center gap-2 items-center">
+                {authError && <p className="text-red-500 font-medium">{authError}</p>}
                 <div className="flex flex-col">
                 <label className="text-black">Email</label>
                 <input className="border-2" type="email" {...register("email", {

@@ -1,4 +1,4 @@
-import { SignupFormSchema } from "@/lib/definitions";
+// import { SignupFormSchema } from "@/lib/definitions";
 import { users } from "@/db/schema";
 import { db } from "@/db/index";
 import sgMail from "@sendgrid/mail";
@@ -12,23 +12,23 @@ export async function POST(request: Request) {
         console.log(data);
 
         //validate data using zod
-        const validateData = SignupFormSchema.safeParse({
-            email: data.email,
-            password: data.password,
-        });
+        // const validateData = SignupFormSchema.safeParse({
+        //     email: data.email,
+        //     password: data.password,
+        // });
 
-        if (!validateData.success) {
-            return Response.json(
-                { errors: validateData.error.flatten().fieldErrors },
-                { status: 422 }
-            );
-        }
+        // if (!validateData.success) {
+        //     return Response.json(
+        //         { errors: validateData.error.flatten().fieldErrors },
+        //         { status: 422 }
+        //     );
+        // }
 
         //check if user already exists
         const existingUsers = await db
             .select()
             .from(users)
-            .where(eq(users.email, validateData.data.email));
+            .where(eq(users.email, data.email));
 
         if (existingUsers.length > 0) {
             return Response.json(
@@ -37,13 +37,11 @@ export async function POST(request: Request) {
             );
         }
 
-
-
         // Generate a UUID for the user so tokens can be created before database insertion
         const userId = crypto.randomUUID();
 
         // Hash password
-        const hashedPassword = await bcrypt.hash(validateData.data.password, 10);
+        const hashedPassword = await bcrypt.hash(data.password, 10);
         const token = crypto.randomBytes(32).toString("hex");
         const verifyLink = `http://localhost:3000/auth/verifyEmail?token=${token}`;
         const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
@@ -53,7 +51,7 @@ export async function POST(request: Request) {
             .insert(users)
             .values({
                 id: userId,
-                name: data.fullName,
+                name: data.name,
                 email: data.email,
                 password: hashedPassword,
                 verificationToken: hashedToken,
@@ -71,7 +69,7 @@ export async function POST(request: Request) {
         const msg = {
             to: newUser.email,
             from: 'hamzafarooq109@gmail.com',
-            subject: "Your Password Reset OTP",
+            subject: "Email Verification Link",
             text: 'Hello plain world!',
             html : `
 <!DOCTYPE html>
