@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar"
 import { GalleryVerticalEndIcon, AudioLinesIcon, LayoutDashboard, TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, FrameIcon, PieChartIcon, MapIcon ,LibraryBig, NotebookPen} from "lucide-react"
 
+
 // This is sample data.
 const data = {
   user: {
@@ -158,7 +159,21 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  user?: {
+    name?: string | null
+    email?: string | null
+    image?: string | null
+  } | null
+}
+
+export function AppSidebar({ user: userProp, ...props }: AppSidebarProps) {
+  const user = {
+    name: userProp?.name || data.user.name,
+    email: userProp?.email || data.user.email,
+    avatar: userProp?.image || data.user.avatar,
+  }
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -181,9 +196,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )
 }
+

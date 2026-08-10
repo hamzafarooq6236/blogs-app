@@ -9,7 +9,7 @@ export default async function Page() {
     redirect("/auth/signin")
   }
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center">
+    <div className="min-h-screen flex flex-col items-center">
       <h1 className="text-black font-bold text-2xl">{session.user?.name}</h1>
       <form
         action={async () => {
@@ -17,7 +17,6 @@ export default async function Page() {
           await signOut();
         }}
       >
-        <Button variant="destructive" type="submit">Sign Out</Button>
       </form>
     </div>
   )
