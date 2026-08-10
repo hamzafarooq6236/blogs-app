@@ -1,19 +1,28 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { cookies } from "next/headers";
 
-export default function SidebarLayout({
+export default async function SidebarLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const cookieStore = await cookies();
+    const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
+
     return (
-        <div className="flex min-h-screen">
-            <SidebarProvider>
+        <div className="">
+            <SidebarProvider defaultOpen={defaultOpen}>
                 <AppSidebar />
-                <main>
-                    <SidebarTrigger />
-                    {children}
-                </main>
+                <SidebarInset>
+                    <header className="flex h-12 items-center px-4">
+                        <SidebarTrigger />
+                    </header>
+
+                    <main className="flex min-h-screen items-center justify-center">
+                        {children}
+                    </main>
+                </SidebarInset>
             </SidebarProvider>
         </div>
     );
