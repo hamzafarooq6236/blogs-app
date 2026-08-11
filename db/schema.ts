@@ -1,4 +1,5 @@
-import { pgTable, text, timestamp, primaryKey, integer } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { pgTable, text, timestamp, primaryKey, integer, uuid, jsonb, check, index, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const users = pgTable("user", {
     id: text("id").primaryKey(),
@@ -35,6 +36,25 @@ export const accounts = pgTable(
         }),
     })
 );
+
+export const blogs = pgTable("blog", {
+    userId: text("userId").notNull().references(() => users.id),
+    id: uuid("id").notNull().primaryKey().defaultRandom(),
+    title: text("title"),
+    slug: text("slug").notNull(),
+    coverImagePath: text("coverImagePath"),
+    content: jsonb("content"),
+    status: text("status").default("draft").notNull(),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+    publishedAt: timestamp("publishedAt").notNull(),
+}, (table) => [
+    check("status_check", sql`${table.status} IN ('active', 'public', 'private')`),
+    uniqueIndex("blogs_slug_unique").on(table.slug),
+    index("blogs_author_id_idx").on(table.userId),
+    index("blogs_status_idx").on(table.status),
+    index("blogs_published_at_idx").on(table.publishedAt),
+]);
 
 export const sessions = pgTable("session", {
     sessionToken: text("sessionToken").primaryKey(),
