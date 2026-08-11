@@ -42,7 +42,16 @@ export function NavMain({
         {items.map((item) => {
           const isItemActive =
             item.isActive ??
-            (item.url !== "#" && (pathname === item.url || pathname?.startsWith(item.url + "/")))
+            (item.url !== "#" &&
+              (pathname === item.url ||
+                (pathname?.startsWith(item.url + "/") &&
+                  !items.some(
+                    (other) =>
+                      other.url !== item.url &&
+                      other.url !== "#" &&
+                      (pathname === other.url || pathname?.startsWith(other.url + "/")) &&
+                      other.url.length > item.url.length
+                  ))));
 
           return (
             <SidebarMenuItem key={item.title}>

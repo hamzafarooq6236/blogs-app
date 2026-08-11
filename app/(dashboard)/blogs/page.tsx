@@ -58,6 +58,7 @@ export default function BlogsPage() {
                         key={blogItem.id}
                         title={blogItem.title ?? "Untitled"}
                         content={blogItem.content ?? {}}
+                        slug={blogItem.slug}
                     />
                 ))
             ) : (
