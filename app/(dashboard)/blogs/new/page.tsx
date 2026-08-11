@@ -44,7 +44,7 @@ export default function NewBlogPage() {
                 <input className="w-full border-2 border-slate-50 p-2" type="text" placeholder="Enter title here" required autoFocus onChange={(e) => { setTitle(e.target.value) }} />
             </div>
             <div className="">
-                <Tiptap onChange={(json) => {
+                <Tiptap mode="edit" onChange={(json) => {
                     setContent(json);
                 }} />
             </div>

@@ -7,9 +7,11 @@ import TextAlign from '@tiptap/extension-text-align'
 import MenuBar from './menu-bar'
 
 interface BlogContent {
-    onChange(json: JSONContent): void
+    content?: JSONContent;
+    mode: "edit" | "view";
+    onChange?: (content: JSONContent) => void;
 }
-export default function Tiptap({ onChange }: BlogContent) {
+export default function Tiptap({ onChange ,mode,content}: BlogContent) {
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
@@ -22,7 +24,7 @@ export default function Tiptap({ onChange }: BlogContent) {
                 types: ['heading', 'paragraph'],
             }),
         ],
-        content: '',
+        content: content ?? "",
         immediatelyRender: false,
 
         editorProps: {
@@ -30,15 +32,18 @@ export default function Tiptap({ onChange }: BlogContent) {
                 class: "bg-slate-100 min-h-[65vh] border rounded-md py-2 px-3 focus:outline-none [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:font-['Arial',sans-serif] [&_h1]:my-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:my-3 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:my-2 [&_p]:my-2"
             }
         },
-        onUpdate({ editor }) {
-            const json = editor.getJSON();
-            onChange(json);
+        editable: mode === "edit",
+
+        onUpdate: ({ editor }) => {
+            if (mode === "edit") {
+                onChange?.(editor.getJSON());
+            }
         },
     })
 
     return (
         <div className="flex flex-col gap-2">
-            <MenuBar editor={editor} />
+            {mode === "edit" && <MenuBar editor={editor} />}
             <EditorContent editor={editor} />
         </div>
     )
