@@ -1,0 +1,1 @@
+ALTER TABLE "blog" ALTER COLUMN "publishedAt" DROP NOT NULL;

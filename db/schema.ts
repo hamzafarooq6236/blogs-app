@@ -47,9 +47,9 @@ export const blogs = pgTable("blog", {
     status: text("status").default("draft").notNull(),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
     updatedAt: timestamp("updatedAt").notNull().defaultNow(),
-    publishedAt: timestamp("publishedAt").notNull(),
+    publishedAt: timestamp("publishedAt"),
 }, (table) => [
-    check("status_check", sql`${table.status} IN ('active', 'public', 'private')`),
+    check("status_check", sql`${table.status} IN ('draft', 'public', 'private')`),
     uniqueIndex("blogs_slug_unique").on(table.slug),
     index("blogs_author_id_idx").on(table.userId),
     index("blogs_status_idx").on(table.status),

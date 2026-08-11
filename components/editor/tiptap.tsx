@@ -1,37 +1,45 @@
 'use client'
 
-import { useEditor, EditorContent } from '@tiptap/react'
+import { useEditor, EditorContent, JSONContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Highlight from '@tiptap/extension-highlight'
 import TextAlign from '@tiptap/extension-text-align'
 import MenuBar from './menu-bar'
 
-const Tiptap = () => {
+interface BlogContent {
+    onChange(json: JSONContent): void
+}
+export default function Tiptap({ onChange }: BlogContent) {
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure({
+                heading: {
+                    levels: [1, 2, 3],
+                },
+            }),
             Highlight,
             TextAlign.configure({
                 types: ['heading', 'paragraph'],
             }),
         ],
         content: '<p>Hello World! 🌎️</p>',
-        immediatelyRender:false,
+        immediatelyRender: false,
 
         editorProps: {
             attributes: {
-                class: "bg-blue-300 min-h-[65vh] border rounded-md py-2 px-3 m-2"
+                class: "bg-slate-100 min-h-[65vh] border rounded-md py-2 px-3 focus:outline-none [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:font-['Arial',sans-serif] [&_h1]:my-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:my-3 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:my-2 [&_p]:my-2"
             }
-        }
-
+        },
+        onUpdate({ editor }) {
+            const json = editor.getJSON();
+            onChange(json);
+        },
     })
 
     return (
-        <div>
+        <div className="flex flex-col gap-2">
             <MenuBar editor={editor} />
             <EditorContent editor={editor} />
         </div>
     )
 }
-
-export default Tiptap

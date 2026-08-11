@@ -1,3 +1,5 @@
+'use client'
+
 import { Editor, useEditorState } from "@tiptap/react"
 import {
     Heading1,
@@ -19,12 +21,25 @@ interface MenuBarProps {
 }
 
 export default function MenuBar({ editor }: MenuBarProps) {
-    if (!editor) {
-        return null
-    }
     const editorState = useEditorState({
         editor,
         selector: ctx => {
+            if (!ctx.editor) {
+                return {
+                    isBold: false,
+                    isItalic: false,
+                    isStrike: false,
+                    isHighlight: false,
+                    isAlignLeft: false,
+                    isAlignCenter: false,
+                    isAlignRight: false,
+                    isAlignJustify: false,
+                    isParagraph: false,
+                    isHeading1: false,
+                    isHeading2: false,
+                    isHeading3: false,
+                }
+            }
             return {
                 // Text formatting
                 isBold: ctx.editor.isActive('bold') ?? false,
@@ -46,6 +61,10 @@ export default function MenuBar({ editor }: MenuBarProps) {
             }
         },
     })
+
+    if (!editor || !editorState) {
+        return null
+    }
 
     const options = [
         {
@@ -117,7 +136,7 @@ export default function MenuBar({ editor }: MenuBarProps) {
 
     return (
         <div className="control-group">
-            <div className="button-group flex flex-wrap gap-2 bg-blue-300 py-2 px-3 m-2 rounded-md">
+            <div className="button-group flex flex-wrap gap-2 bg-slate-200 py-2 px-3 rounded-md">
                 {options.map((option, index) => {
                     const IconComponent = option.icon
                     return (
