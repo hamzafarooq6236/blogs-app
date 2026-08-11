@@ -22,7 +22,7 @@ export default function Tiptap({ onChange }: BlogContent) {
                 types: ['heading', 'paragraph'],
             }),
         ],
-        content: '<p>Hello World! 🌎️</p>',
+        content: '',
         immediatelyRender: false,
 
         editorProps: {

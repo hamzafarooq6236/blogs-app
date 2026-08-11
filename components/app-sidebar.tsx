@@ -58,7 +58,7 @@ const data = {
     },
     {
       title: "My Blogs",
-      url: "#",
+      url: "/blogs",
       icon: (
         <LibraryBig
         />
