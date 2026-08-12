@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 
 export default async function Page() {
 
-  const res = await fetch("http://localhost:3000/api/dashboard", {
+  const res = await fetch(`http://${process.env.NEXTAUTH_URL}:3000/api/dashboard`, {
     headers: {
       cookie: (await headers()).get("cookie") ?? "",
     }

@@ -17,7 +17,7 @@ interface BlogItem {
 
 export default async function BlogsPage() {
 
-    const res = await fetch("http://localhost:3000/api/blogs", {
+    const res = await fetch(`http://${process.env.NEXTAUTH_URL}:3000/api/blogs`, {
         headers: {
             cookie: (await headers()).get("cookie") ?? "",
         }
