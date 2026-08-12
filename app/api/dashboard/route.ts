@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { blogs } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { eq, count } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
 export async function GET() {
     try {

@@ -50,11 +50,7 @@ export default function ReadBlog({
     return (
         <div className="flex flex-col gap-4 p-4">
             {title && <h1 className="text-3xl font-bold">{title}</h1>}
-            {content ? (
-                <Tiptap mode="view" content={content} />
-            ) : (
-                <p>No content available.</p>
-            )}
+            <Tiptap mode="view" content={content} />
         </div>
     );
 }
