@@ -14,7 +14,7 @@ export default function blog({ title, slug, createdAt, publishedAt }: BlogProps)
     const router = useRouter();
     
     return (
-        <div className="flex flex-col w-[40vw] gap-1 border-2 rounded-2xl px-3 pt-3 pb-1">
+        <div className="flex flex-col bg-emerald-100 w-[40vw] gap-1 border-2 border-emerald-500 rounded-2xl px-3 pt-3 pb-1">
             <div className="flex items-center ">
                 <div className="flex-1 min-w-0">
                     <Link href={`/blogs/${slug}`} className=" hover:text-blue-400 hover:underline hover:underline-offset-3">
