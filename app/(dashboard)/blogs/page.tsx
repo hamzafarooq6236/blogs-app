@@ -13,7 +13,7 @@ interface BlogItem {
     status: string;
     createdAt: string;
     updatedAt: string;
-    publishedAt: string | null;
+    publishedAt: number | string | null;
 }
 
 interface BlogsResponse {
@@ -54,11 +54,14 @@ export default function BlogsPage() {
             <p>My Blogs</p>
             {blogs?.data && blogs.data.length > 0 ? (
                 blogs.data.map((blogItem) => (
+        
                     <Blog
                         key={blogItem.id}
                         title={blogItem.title ?? "Untitled"}
-                        content={blogItem.content ?? {}}
                         slug={blogItem.slug}
+                        createdAt={blogItem.createdAt}
+                        publishedAt={blogItem.publishedAt}
+
                     />
                 ))
             ) : (
