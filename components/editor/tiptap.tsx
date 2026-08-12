@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useEditor, EditorContent, JSONContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Highlight from '@tiptap/extension-highlight'
@@ -40,6 +41,16 @@ export default function Tiptap({ onChange ,mode,content}: BlogContent) {
             }
         },
     })
+
+    useEffect(() => {
+        if (editor && content) {
+            const currentContent = JSON.stringify(editor.getJSON());
+            const newContent = JSON.stringify(content);
+            if (currentContent !== newContent) {
+                editor.commands.setContent(content);
+            }
+        }
+    }, [editor, content])
 
     return (
         <div className="flex flex-col gap-2">
