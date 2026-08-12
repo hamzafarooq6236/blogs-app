@@ -7,7 +7,7 @@ import TextAlign from '@tiptap/extension-text-align'
 import MenuBar from './menu-bar'
 
 interface BlogContent {
-    content?: JSONContent;
+    content?: JSONContent |null ;
     mode: "edit" | "view";
     onChange?: (content: JSONContent) => void;
 }

@@ -14,7 +14,7 @@ export default function NewBlogPage() {
         console.log(title);
         console.log(content);
 
-        const res = await fetch("/api/blogs/new",{
+        const res = await fetch("/api/blogs",{
             method:"POST",
             headers:{
                 "Content-Type":"application/json"
