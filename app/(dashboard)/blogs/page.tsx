@@ -17,20 +17,20 @@ interface BlogItem {
 
 export default async function BlogsPage() {
 
-                const res = await fetch("http://localhost:3000/api/blogs",{
-                    headers:{
-                        cookie:(await headers()).get("cookie")??"", 
-                    }
-                });
-                const result = await res.json();
-                console.log(result);
+    const res = await fetch("http://localhost:3000/api/blogs", {
+        headers: {
+            cookie: (await headers()).get("cookie") ?? "",
+        }
+    });
+    const result = await res.json();
+    console.log(result);
 
     return (
         <div className="flex flex-col items-center gap-4">
             <p>My Blogs</p>
             {result?.data && result.data.length > 0 ? (
-                result.data.map((blogItem:BlogItem) => (
-        
+                result.data.map((blogItem: BlogItem) => (
+
                     <Blog
                         key={blogItem.id}
                         title={blogItem.title ?? "Untitled"}

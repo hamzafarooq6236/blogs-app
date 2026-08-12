@@ -71,7 +71,7 @@ export async function POST(request: Request) {
             from: 'hamzafarooq109@gmail.com',
             subject: "Email Verification Link",
             text: 'Hello plain world!',
-            html : `
+            html: `
 <!DOCTYPE html>
 <html>
 <head>

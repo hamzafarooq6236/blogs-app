@@ -1,21 +1,14 @@
-// interface DashboardStats {
-//   total: number;
-//   draft: number;
-//   public: number;
-//   private: number;
-// }
-
 import { headers } from "next/headers";
 
 export default async function Page() {
 
-        const res = await fetch("http://localhost:3000/api/dashboard",{
-          headers:{
-            cookie: (await headers()).get("cookie") ?? "",
-          }
-        });
-        const data = await res.json();
-        console.log(data)
+  const res = await fetch("http://localhost:3000/api/dashboard", {
+    headers: {
+      cookie: (await headers()).get("cookie") ?? "",
+    }
+  });
+  const data = await res.json();
+  console.log(data)
 
   return (
     <div className="min-h-screen flex flex-col items-center gap-5 p-6">

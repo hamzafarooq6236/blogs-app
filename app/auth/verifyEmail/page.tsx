@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function VerifyPage() {
+function VerifyEmailContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -34,7 +34,7 @@ export default function VerifyPage() {
     }, [router, searchParams]);
 
     return (
-        <div className="min-h-screen flex justify-center items-center text-green-600">
+        <div className="min-h-screen flex justify-center items-center text-green-600 gap-2">
             {isLoading ? (
                 <>
                     <p>Verifying your account...</p>
@@ -44,5 +44,17 @@ export default function VerifyPage() {
                 <p>Your account has been verified.</p>
             )}
         </div>
+    );
+}
+
+export default function VerifyPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex justify-center items-center">
+                <p>Loading...</p>
+            </div>
+        }>
+            <VerifyEmailContent />
+        </Suspense>
     );
 }
