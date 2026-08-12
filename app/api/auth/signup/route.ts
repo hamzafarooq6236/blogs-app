@@ -43,7 +43,7 @@ export async function POST(request: Request) {
         // Hash password
         const hashedPassword = await bcrypt.hash(data.password, 10);
         const token = crypto.randomBytes(32).toString("hex");
-        const verifyLink = `http://${process.env.NEXTAUTH_URL}:3000/auth/verifyEmail?token=${token}`;
+        const verifyLink = `${process.env.NEXTAUTH_URL}/auth/verifyEmail?token=${token}`;
         const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
         // Create and save new user

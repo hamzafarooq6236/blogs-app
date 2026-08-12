@@ -1,82 +1,118 @@
-import NextAuth from "next-auth"
-import Google from "next-auth/providers/google"
-import { DrizzleAdapter } from "@auth/drizzle-adapter"
-import { db } from "@/db"
-import Credentials from "next-auth/providers/credentials"
+// lib/auth.ts
 
-import { users } from "@/db/schema"
-import { eq } from "drizzle-orm"
-import bcrypt from "bcryptjs"
+import NextAuth from "next-auth";
+import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { db } from "@/db";
+
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
+
+import bcrypt from "bcryptjs";
+
+import { authConfig } from "@/auth.config";
+
+export const {
+  handlers,
+  signIn,
+  signOut,
+  auth,
+} = NextAuth({
+  ...authConfig,
+
   adapter: DrizzleAdapter(db),
+
   providers: [
     Google({
       clientId: process.env.CLIENT_ID!,
       clientSecret: process.env.CLIENT_SECRET!,
+
       allowDangerousEmailAccountLinking: true,
+
       authorization: {
         params: {
           prompt: "consent",
         },
       },
     }),
+
     Credentials({
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: {
+          label: "Email",
+          type: "email",
+        },
+
+        password: {
+          label: "Password",
+          type: "password",
+        },
       },
+
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null
+        if (
+          !credentials?.email ||
+          !credentials?.password
+        ) {
+          return null;
         }
 
-        const email = credentials.email as string
-        const password = credentials.password as string
+        const email = credentials.email as string;
+        const password = credentials.password as string;
 
         const [user] = await db
           .select()
           .from(users)
-          .where(eq(users.email, email))
+          .where(eq(users.email, email));
 
         if (!user || !user.password) {
-          return null
+          return null;
         }
 
-        const passwordMatch = await bcrypt.compare(password, user.password)
+        const passwordMatch = await bcrypt.compare(
+          password,
+          user.password
+        );
+
         if (!passwordMatch) {
-          return null
+          return null;
         }
 
         return {
           id: user.id,
           name: user.name,
           email: user.email,
-        }
+        };
       },
     }),
   ],
+
   session: {
     strategy: "jwt",
-    
-    maxAge: 60 * 60 * 24 * 7 // 7 days
+    maxAge: 60 * 60 * 24 * 7,
   },
+
   trustHost: true,
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
+        token.id = user.id;
       }
-      return token
+
+      return token;
     },
+
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = (token.id as string) || (token.sub as string)
+        session.user.id =
+          (token.id as string) ||
+          (token.sub as string);
       }
-      return session
+
+      return session;
     },
   },
-  pages: {
-    signIn: "/auth/signin",
-  }
-})
+});
