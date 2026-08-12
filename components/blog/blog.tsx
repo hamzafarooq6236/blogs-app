@@ -1,8 +1,7 @@
 import { JSONContent } from "@tiptap/react"
 import { Pencil } from 'lucide-react';
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-
+// import {Link} from "next/navigation";
 interface BlogProps {
     title: string,
     // content: JSONContent,
@@ -11,8 +10,7 @@ interface BlogProps {
     publishedAt: number | string | null
 }
 export default function blog({ title, slug, createdAt, publishedAt }: BlogProps) {
-    const router = useRouter();
-    
+
     return (
         <div className="flex flex-col bg-emerald-100 w-[40vw] gap-1 border-2 border-emerald-500 rounded-2xl px-3 pt-3 pb-1">
             <div className="flex items-center ">
@@ -22,15 +20,10 @@ export default function blog({ title, slug, createdAt, publishedAt }: BlogProps)
                     </Link>
                 </div>
 
-                <button
-                    type="button"
-                    className="shrink-0 ml-auto"
-                    onClick={() => router.push(`/blogs/${slug}/edit`)}
-                >
-                    <Pencil className="h-4 w-4 cursor-pointer text-black" />
-                </button>
+
+                <Link href={`/blogs/${slug}/edit`}><Pencil className="shrink-0 ml-auto h-4 w-4 cursor-pointer text-black" /></Link>
             </div>
-            <p className="text-black text-xs self-end">Created: {createdAt} Updated: {}</p>
+            <p className="text-black text-xs self-end">Created: {createdAt} Updated: { }</p>
         </div>
     )
 }

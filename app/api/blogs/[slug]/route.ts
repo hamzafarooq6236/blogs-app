@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { blogs } from "@/db/schema";
 import { auth } from "@/lib/auth";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export async function GET(
     request: Request,
@@ -22,7 +22,7 @@ export async function GET(
         const [blog] = await db
             .select()
             .from(blogs)
-            .where(eq(blogs.slug, slug));
+            .where(and(eq(blogs.slug, slug),eq(blogs.userId,session.user.id)));
 
         if (!blog) {
             return Response.json({ error: "Blog not found" }, { status: 404 });

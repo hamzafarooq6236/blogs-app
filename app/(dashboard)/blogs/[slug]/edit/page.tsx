@@ -60,7 +60,7 @@ export default function EditBlog({ params }: { params: Promise<{ slug: string }>
         setSaving(true);
         try {
             const res = await fetch(`/api/blogs/${slug}/edit`, {
-                method: "POST",
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },

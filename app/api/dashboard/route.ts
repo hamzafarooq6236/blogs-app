@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 export async function GET() {
     try {
         const session = await auth();
+        console.log(session)
         if (!session?.user?.id) {
             return Response.json({ message: "Unauthorized" }, { status: 401 });
         }

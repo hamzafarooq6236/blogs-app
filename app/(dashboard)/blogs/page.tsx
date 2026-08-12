@@ -1,7 +1,6 @@
-"use client"
 import Blog from "@/components/blog/blog";
-import { useEffect, useState } from "react";
 import { JSONContent } from "@tiptap/react";
+import { headers } from "next/headers";
 
 interface BlogItem {
     id: string;
@@ -16,44 +15,21 @@ interface BlogItem {
     publishedAt: number | string | null;
 }
 
-interface BlogsResponse {
-    data: BlogItem[];
-}
+export default async function BlogsPage() {
 
-export default function BlogsPage() {
-    const [blogs, setBlogs] = useState<BlogsResponse | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function getBlogs() {
-            try {
-                const res = await fetch("/api/blogs", {
-                    method: "GET",
+                const res = await fetch("http://localhost:3000/api/blogs",{
+                    headers:{
+                        cookie:(await headers()).get("cookie")??"", 
+                    }
                 });
                 const result = await res.json();
                 console.log(result);
-                if (res.ok) {
-                    setBlogs(result);
-                }
-            } catch (error) {
-                console.error("Error fetching blogs:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        getBlogs();
-    }, []);
-
-    if (loading) {
-        return <div className="flex justify-center p-4">Loading...</div>;
-    }
 
     return (
         <div className="flex flex-col items-center gap-4">
             <p>My Blogs</p>
-            {blogs?.data && blogs.data.length > 0 ? (
-                blogs.data.map((blogItem) => (
+            {result?.data && result.data.length > 0 ? (
+                result.data.map((blogItem:BlogItem) => (
         
                     <Blog
                         key={blogItem.id}
