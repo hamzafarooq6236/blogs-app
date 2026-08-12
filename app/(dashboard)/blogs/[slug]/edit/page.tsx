@@ -5,11 +5,14 @@ import { Button } from "@/components/ui/button";
 import { JSONContent } from "@tiptap/react";
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 export default function EditBlog({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = use(params);
     const router = useRouter();
-
+    
+    const [enabled, setEnabled] = useState(false);
     const [title, setTitle] = useState<string>("");
     const [content, setContent] = useState<JSONContent | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -40,7 +43,20 @@ export default function EditBlog({ params }: { params: Promise<{ slug: string }>
         }
     }, [slug]);
 
-    async function handleUpdate(status: "draft" | "public" = "public") {
+    async function handleUpdate(status:string) {
+
+        if (!title.trim()) {
+            alert("Title is required!");
+            return;
+        }
+        if (status === "publish") {
+            if(enabled===true){
+                status="public"
+            }else{
+                status="private"
+            }
+
+        }
         setSaving(true);
         try {
             const res = await fetch(`/api/blogs/${slug}/edit`, {
@@ -77,7 +93,11 @@ export default function EditBlog({ params }: { params: Promise<{ slug: string }>
     return (
         <div className="flex flex-col gap-2 w-[70vw] mx-auto p-3">
             <div className="flex gap-2 justify-end flex-wrap">
-                <Button onClick={() => handleUpdate("public")} disabled={saving}>
+                <div className="flex items-center space-x-2 border-2 rounded-sm p-1">
+                    <Switch className="cursor-pointer" id="airplane-mode" onClick={()=>setEnabled(!enabled)}/>
+                    <Label htmlFor="airplane-mode">Public</Label>
+                </div>
+                <Button onClick={() => handleUpdate("publish")} disabled={saving}>
                     {saving ? "Saving..." : "Publish"}
                 </Button>
                 <Button variant="outline" onClick={() => handleUpdate("draft")} disabled={saving}>
