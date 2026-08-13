@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { auth } from "@/lib/auth";
 
 interface FormInputs {
     email: string;
@@ -11,7 +12,10 @@ interface FormInputs {
     form?: string;
 }
 
-export default function SignIn() {
+export default async function SignIn() {
+    const session = auth();
+    if(!session){
+    }
     const { register, formState: { errors }, handleSubmit } = useForm<FormInputs>();
     const router = useRouter();
     const [authError, setAuthError] = useState<string | null>(null);

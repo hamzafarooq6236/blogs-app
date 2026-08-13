@@ -11,20 +11,20 @@ export const authConfig = {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user;
 
-            const isDashboard =
-                nextUrl.pathname.startsWith("/dashboard");
+            // const isDashboard =
+            //     nextUrl.pathname.startsWith("/dashboard");
 
-            const isSettings =
-                nextUrl.pathname.startsWith("/settings");
+            // const isSettings =
+            //     nextUrl.pathname.startsWith("/settings");
 
-            const isEditBlog =
-                nextUrl.pathname.includes("/edit");
+            // const isEditBlog =
+            //     nextUrl.pathname.includes("/blogs");
 
-            if (isDashboard || isSettings || isEditBlog) {
-                return isLoggedIn;
-            }
+            // if (isDashboard || isSettings || isEditBlog) {
+            //     return isLoggedIn;
+            // }
 
-            return true;
+            return isLoggedIn;
         },
     },
 

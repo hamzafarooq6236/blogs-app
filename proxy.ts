@@ -7,8 +7,9 @@ export default NextAuth(authConfig).auth;
 
 export const config = {
   matcher: [
-    "/(dashboard)/*",
+    "/dashboard/:path*",
     "/settings/:path*",
-    "/blogs/:path*",
+    "/blogs/new",
+    "/blogs/:path*/edit",
   ],
 };
