@@ -36,7 +36,7 @@ export default async function BlogsPage() {
                         title={blogItem.title ?? "Untitled"}
                         slug={blogItem.slug}
                         createdAt={blogItem.createdAt}
-                        publishedAt={blogItem.publishedAt}
+                        updatedAt={blogItem.updatedAt}
 
                     />
                 ))

@@ -9,11 +9,12 @@ interface BlogProps {
     title: string;
     slug: string;
     createdAt: string;
-    publishedAt: number | string | null;
+    updatedAt: string;
 }
 
-export default function Blog({ title, slug, createdAt, publishedAt }: BlogProps) {
+export default function Blog({ title, slug, createdAt, updatedAt }: BlogProps) {
     const router = useRouter();
+    console.log(new Date(createdAt))
 
     async function handleDelete() {
         const confirmed = confirm(`Are you sure you want to delete "${title}"?`);
@@ -57,7 +58,7 @@ export default function Blog({ title, slug, createdAt, publishedAt }: BlogProps)
                     </Link>
                 </div>
             </div>
-            <p className="text-black text-xs self-end">Created: {createdAt} Updated: { }</p>
+            <p className="text-cyan-700 text-xs self-end">Created: {new Date(createdAt).toLocaleString()} Updated: {new Date(updatedAt).toLocaleString() }</p>
         </div>
     );
 }
