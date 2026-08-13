@@ -1,6 +1,7 @@
 "use client"
 
 import { use, useEffect, useState } from "react";
+import { getBlogBySlugAction } from "@/actions/blogs";
 import Tiptap from "@/components/editor/tiptap";
 import { JSONContent } from "@tiptap/react";
 
@@ -18,15 +19,14 @@ export default function ReadBlog({
     useEffect(() => {
         async function fetchBlog() {
             try {
-                const res = await fetch(`/api/blogs/${slug}`);
-                const data = await res.json();
+                const res = await getBlogBySlugAction(slug);
 
-                if (!res.ok) {
-                    throw new Error(data.error || "Failed to fetch blog");
+                if (!res.success || !res.data) {
+                    throw new Error(res.error || "Failed to fetch blog");
                 }
 
-                setTitle(data.title ?? "");
-                setContent(data.content);
+                setTitle(res.data.title ?? "");
+                setContent(res.data.content??"");
             } catch (err: any) {
                 setError(err.message || "An error occurred");
             } finally {

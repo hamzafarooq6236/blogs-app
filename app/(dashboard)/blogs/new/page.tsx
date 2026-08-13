@@ -1,4 +1,5 @@
 "use client"
+import { createBlogAction } from "@/actions/blogs";
 import Tiptap from "@/components/editor/tiptap";
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button";
@@ -19,31 +20,23 @@ export default function NewBlogPage() {
             return;
         }
         if (status === "publish") {
-            if(enabled===true){
-                status="public"
-            }else{
-                status="private"
+            if (enabled === true) {
+                status = "public"
+            } else {
+                status = "private"
             }
-
         }
         console.log(title);
         console.log(content);
 
-        const res = await fetch("/api/blogs", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ title, content, status }),
-        })
-        console.log(await res.json());
+        const res = await createBlogAction({ title, content, status });
+        console.log(res);
 
-
-        if (res.ok) {
+        if (res.success) {
             router.push("/dashboard");
+        } else {
+            alert(res.error || "Failed to save post");
         }
-
-
     }
     return (
         <div className=" flex flex-col gap-2 w-[70vw] mx-auto p-3">

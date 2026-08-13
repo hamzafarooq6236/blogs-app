@@ -1,6 +1,6 @@
 import Blog from "@/components/blog/blog";
+import { getBlogsAction } from "@/actions/blogs";
 import { JSONContent } from "@tiptap/react";
-import { headers } from "next/headers";
 
 interface BlogItem {
     id: string;
@@ -16,20 +16,13 @@ interface BlogItem {
 }
 
 export default async function BlogsPage() {
-
-    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/blogs`, {
-        headers: {
-            cookie: (await headers()).get("cookie") ?? "",
-        }
-    });
-    const result = await res.json();
-    console.log(result);
+    const result = await getBlogsAction();
 
     return (
         <div className="flex flex-col items-center gap-4">
             <p>My Blogs</p>
             {result?.data && result.data.length > 0 ? (
-                result.data.map((blogItem: BlogItem) => (
+                result.data.map((blogItem) => (
 
                     <Blog
                         key={blogItem.id}

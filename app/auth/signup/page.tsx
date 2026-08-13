@@ -1,7 +1,9 @@
 "use client"
+import { signUpAction } from "@/actions/auth";
 import { signIn } from "next-auth/react"
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 interface FormInputs {
     name: string;
@@ -12,16 +14,18 @@ interface FormInputs {
 
 export default function SignIn() {
     const { register, formState: { errors }, handleSubmit } = useForm<FormInputs>();
+    const [message, setMessage] = useState<string | null>(null);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     async function submit(data: FormInputs) {
-        const res = await fetch("/api/auth/signup",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body: JSON.stringify(data)
-        })  
-
+        setMessage(null);
+        setErrorMsg(null);
+        const res = await signUpAction(data);
+        if (res.success) {
+            setMessage(res.message || "Signup successful!");
+        } else {
+            setErrorMsg(res.error || "Signup failed");
+        }
     }
     return (
         <div className="min-h-screen flex flex-col justify-center items-center gap-2">
@@ -55,6 +59,8 @@ export default function SignIn() {
                 })} />
                 {errors.password?.message && <p className="text-red-500">{errors.password?.message}</p>}
                 </div>
+                {message && <p className="text-green-600 text-sm">{message}</p>}
+                {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
                 <button type="submit" className=" rounded-2xl border-2 p-2 text-black w-30 cursor-pointer">Submit</button>
             </form>
             <Link href="/auth/signin" className="text-blue-500">Already have an account</Link>

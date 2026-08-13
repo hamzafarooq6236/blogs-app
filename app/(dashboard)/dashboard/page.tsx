@@ -1,14 +1,8 @@
-import { headers } from "next/headers";
+import { getDashboardStatsAction } from "@/actions/blogs";
 
 export default async function Page() {
-
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/dashboard`, {
-    headers: {
-      cookie: (await headers()).get("cookie") ?? "",
-    }
-  });
-  const data = await res.json();
-  console.log(data)
+  const result = await getDashboardStatsAction();
+  const data = result.stats;
 
   return (
     <div className="min-h-screen flex flex-col items-center gap-5 p-6">

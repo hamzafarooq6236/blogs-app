@@ -1,5 +1,6 @@
 "use client"
 
+import { deleteBlogAction } from "@/actions/blogs";
 import { Trash2, Pencil } from 'lucide-react';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,8 +9,8 @@ import { useState } from "react";
 interface BlogProps {
     title: string;
     slug: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export default function Blog({ title, slug, createdAt, updatedAt }: BlogProps) {
@@ -21,13 +22,10 @@ export default function Blog({ title, slug, createdAt, updatedAt }: BlogProps) {
         if (!confirmed) return;
 
         try {
-            const res = await fetch(`/api/blogs/${slug}/delete`, {
-                method: "DELETE",
-            });
+            const res = await deleteBlogAction(slug);
 
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || "Failed to delete blog");
+            if (!res.success) {
+                throw new Error(res.error || "Failed to delete blog");
             }
 
             router.refresh();

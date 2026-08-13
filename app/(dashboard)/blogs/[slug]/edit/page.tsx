@@ -1,5 +1,6 @@
 "use client"
 
+import { getBlogBySlugAction, updateBlogAction } from "@/actions/blogs";
 import Tiptap from "@/components/editor/tiptap";
 import { Button } from "@/components/ui/button";
 import { JSONContent } from "@tiptap/react";
@@ -22,15 +23,14 @@ export default function EditBlog({ params }: { params: Promise<{ slug: string }>
     useEffect(() => {
         async function fetchBlog() {
             try {
-                const res = await fetch(`/api/blogs/${slug}/edit`);
-                const data = await res.json();
+                const res = await getBlogBySlugAction(slug);
 
-                if (!res.ok) {
-                    throw new Error(data.error || "Failed to fetch blog");
+                if (!res.success || !res.data) {
+                    throw new Error(res.error || "Failed to fetch blog");
                 }
 
-                setTitle(data.title ?? "");
-                setContent(data.content ?? null);
+                setTitle(res.data.title ?? "");
+                setContent(res.data.content ?? null);
             } catch (err: any) {
                 setError(err.message || "An error occurred");
             } finally {
@@ -43,34 +43,25 @@ export default function EditBlog({ params }: { params: Promise<{ slug: string }>
         }
     }, [slug]);
 
-    async function handleUpdate(status:string) {
+    async function handleUpdate(status: string) {
 
         if (!title.trim()) {
             alert("Title is required!");
             return;
         }
         if (status === "publish") {
-            if(enabled===true){
-                status="public"
-            }else{
-                status="private"
+            if (enabled === true) {
+                status = "public"
+            } else {
+                status = "private"
             }
-
         }
         setSaving(true);
         try {
-            const res = await fetch(`/api/blogs/${slug}/edit`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ title, content, status }),
-            });
+            const res = await updateBlogAction(slug, { title, content, status });
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || "Failed to update blog");
+            if (!res.success) {
+                throw new Error(res.error || "Failed to update blog");
             }
 
             router.push("/dashboard");
