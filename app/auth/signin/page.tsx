@@ -12,10 +12,7 @@ interface FormInputs {
     form?: string;
 }
 
-export default async function SignIn() {
-    const session = auth();
-    if(!session){
-    }
+export default function SignIn() {
     const { register, formState: { errors }, handleSubmit } = useForm<FormInputs>();
     const router = useRouter();
     const [authError, setAuthError] = useState<string | null>(null);

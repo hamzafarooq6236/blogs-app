@@ -27,6 +27,12 @@ export default async function Home() {
           </Link>
 
           <nav className="flex items-center gap-4">
+            <Link
+              href="/public/blogs"
+              className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white transition-colors"
+            >
+              Public Blogs
+            </Link>
             {session?.user ? (
               <Link
                 href="/dashboard"

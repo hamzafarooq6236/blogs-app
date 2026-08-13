@@ -223,3 +223,40 @@ export async function getDashboardStatsAction() {
         };
     }
 }
+
+export async function getPublicBlogsAction() {
+    try {
+        const publicBlogs = await db
+            .select()
+            .from(blogs)
+            .where(eq(blogs.status, "public"))
+            .orderBy(desc(blogs.createdAt));
+
+        return { success: true, data: publicBlogs };
+    } catch (error: any) {
+        console.error("Error fetching public blogs action:", error);
+        return { success: false, error: error.message || "Failed to fetch public blogs", data: [] };
+    }
+}
+
+export async function getPublicBlogBySlugAction(slug: string) {
+    try {
+        if (!slug) {
+            return { success: false, error: "Slug is required", data: null };
+        }
+
+        const [blog] = await db
+            .select()
+            .from(blogs)
+            .where(and(eq(blogs.slug, slug), eq(blogs.status, "public")));
+
+        if (!blog) {
+            return { success: false, error: "Blog not found", data: null };
+        }
+
+        return { success: true, data: blog };
+    } catch (error: any) {
+        console.error("Error fetching public blog by slug action:", error);
+        return { success: false, error: error.message || "Failed to fetch public blog post", data: null };
+    }
+}
