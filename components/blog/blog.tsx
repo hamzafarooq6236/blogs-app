@@ -36,27 +36,34 @@ export default function Blog({ title, slug, createdAt, updatedAt }: BlogProps) {
     }
 
     return (
-        <div className="flex flex-col bg-emerald-100 w-[40vw] gap-1 border-2 border-emerald-500 rounded-2xl px-3 pt-3 pb-1">
-            <div className="flex items-center ">
-                <div className="flex-1 min-w-0">
-                    <Link href={`/blogs/${slug}`} className="hover:text-blue-400 hover:underline hover:underline-offset-3">
-                        {title}
-                    </Link>
-                </div>
-                <div className="flex gap-2 items-center">
-                    <button
-                        type="button"
-                        onClick={handleDelete}
-                        title="Delete blog"
-                    >
-                        <Trash2 className="text-black h-4 w-4 cursor-pointer hover:text-red-600 transition-colors" />
-                    </button>
-                    <Link href={`/blogs/${slug}/edit`} title="Edit blog">
-                        <Pencil className="shrink-0 ml-auto h-4 w-4 cursor-pointer text-black" />
-                    </Link>
+        <div className="flex flex-col sm:flex-row bg-white/60 w-full gap-4 sm:items-center justify-between border border-[#CBF1F5] rounded-3xl p-5 shadow-sm shadow-[#A6E3E9]/10 backdrop-blur-xl hover:shadow-md hover:border-[#A6E3E9] transition-all group">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
+                <Link href={`/blogs/${slug}`} className="text-xl font-bold text-slate-800 hover:text-[#71C9CE] transition-colors line-clamp-1 w-fit">
+                    {title}
+                </Link>
+                <div className="flex flex-wrap gap-2">
+                    <p className="text-slate-500 text-xs font-medium bg-[#CBF1F5]/50 px-3 py-1 rounded-full w-fit">
+                        Created: {new Date(createdAt).toLocaleString()}
+                    </p>
+                    <p className="text-slate-500 text-xs font-medium bg-[#CBF1F5]/50 px-3 py-1 rounded-full w-fit">
+                        Updated: {new Date(updatedAt).toLocaleString()}
+                    </p>
                 </div>
             </div>
-            <p className="text-cyan-700 text-xs self-end">Created: {new Date(createdAt).toLocaleString()} Updated: {new Date(updatedAt).toLocaleString() }</p>
+            
+            <div className="flex gap-2 items-center bg-[#CBF1F5]/30 p-1.5 rounded-xl transition-opacity shrink-0 self-start sm:self-auto">
+                <button
+                    type="button"
+                    onClick={handleDelete}
+                    title="Delete blog"
+                    className="p-2 hover:bg-red-100 rounded-lg transition-colors text-red-400"
+                >
+                    <Trash2 className="h-4 w-4 cursor-pointer" />
+                </button>
+                <Link href={`/blogs/${slug}/edit`} title="Edit blog" className="p-2 hover:bg-[#CBF1F5] rounded-lg transition-colors text-[#71C9CE]">
+                    <Pencil className="h-4 w-4 cursor-pointer" />
+                </Link>
+            </div>
         </div>
     );
 }
