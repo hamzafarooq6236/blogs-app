@@ -43,7 +43,7 @@ export default function NewBlogPage() {
     return (
         <div className="min-h-[calc(100vh-3rem)] w-full relative overflow-hidden font-sans p-6 sm:p-10">
             {/* Subtle Background Elements matching landing page */}
-            <div className="absolute -top-40 -left-40 w-96 h-96 bg-[#CBF1F5] rounded-full blur-3xl opacity-60 pointer-events-none z-0"></div>
+            {/* <div className="absolute -top-40 -left-40 w-96 h-96 bg-[#CBF1F5] rounded-full blur-3xl opacity-60 pointer-events-none z-0"></div> */}
             <div className="absolute top-1/3 -right-40 w-96 h-96 bg-[#A6E3E9] rounded-full blur-3xl opacity-40 pointer-events-none z-0"></div>
 
             <div className="max-w-5xl mx-auto relative z-10 flex flex-col gap-6">

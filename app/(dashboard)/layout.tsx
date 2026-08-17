@@ -18,6 +18,7 @@ export default async function SidebarLayout({
                 <AppSidebar user={session?.user} />
                 <SidebarInset>
                     <header className="flex h-12 items-center px-4">
+                        <div className="absolute -top-40 -left-40 w-96 h-96 bg-[#baf6fc] rounded-full blur-3xl opacity-60 pointer-events-none z-[0]"></div>
                         <SidebarTrigger />
                     </header>
 
