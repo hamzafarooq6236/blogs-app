@@ -9,7 +9,7 @@ export const config = {
   matcher: [
     "/dashboard/:path*",
     "/settings/:path*",
-    "/blogs/new",
-    "/blogs/:path*/edit",
+    // "/blogs/new",
+    "/blogs/:path*",
   ],
 };
