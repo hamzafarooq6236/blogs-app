@@ -8,6 +8,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Edit3 } from "lucide-react";
 
 export default function EditBlog({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = use(params);
@@ -74,49 +75,56 @@ export default function EditBlog({ params }: { params: Promise<{ slug: string }>
     }
 
     if (loading) {
-        return <div className="flex justify-center p-6 text-slate-600">Loading blog details...</div>;
+        return <div className="flex justify-center p-6 text-slate-600 font-sans">Loading blog details...</div>;
     }
 
     if (error) {
-        return <div className="flex justify-center p-6 text-red-500">{error}</div>;
+        return <div className="flex justify-center p-6 text-red-500 font-sans">{error}</div>;
     }
 
     return (
-        <div className="flex flex-col gap-2 w-[70vw] mx-auto p-3">
-            <div className="flex gap-2 justify-end flex-wrap">
-                <div className="flex items-center space-x-2 border-2 rounded-sm p-1">
-                    <Switch className="cursor-pointer" id="airplane-mode" onClick={()=>setEnabled(!enabled)}/>
-                    <Label htmlFor="airplane-mode">Public</Label>
+        <div className="flex flex-col gap-6 max-w-5xl mx-auto py-10 px-6 font-sans">
+            <div className="flex flex-col sm:flex-row gap-4 sm:justify-between sm:items-center bg-white/70 border border-[#CBF1F5] rounded-2xl p-4 backdrop-blur-md shadow-lg shadow-[#A6E3E9]/20">
+                <div className="flex items-center space-x-3 px-2">
+                    <Switch className="cursor-pointer data-[state=checked]:bg-[#71C9CE]" id="public-mode" checked={enabled} onClick={()=>setEnabled(!enabled)}/>
+                    <Label htmlFor="public-mode" className="font-semibold text-slate-700 cursor-pointer">Public Post</Label>
                 </div>
-                <Button onClick={() => handleUpdate("publish")} disabled={saving}>
-                    {saving ? "Saving..." : "Publish"}
-                </Button>
-                <Button variant="outline" onClick={() => handleUpdate("draft")} disabled={saving}>
-                    Save Draft
-                </Button>
-                <Button variant="destructive" onClick={() => router.back()} disabled={saving}>
-                    Cancel
-                </Button>
+                
+                <div className="flex items-center gap-3">
+                    <Button variant="outline" onClick={() => router.back()} disabled={saving} className="border-[#A6E3E9] text-slate-600 hover:bg-[#CBF1F5]/30 rounded-xl transition-all">
+                        Cancel
+                    </Button>
+                    <Button variant="secondary" onClick={() => handleUpdate("draft")} disabled={saving} className="bg-[#CBF1F5] text-[#3b9ea4] hover:bg-[#A6E3E9] rounded-xl transition-all font-semibold hover:text-white">
+                        Save Draft
+                    </Button>
+                    <Button onClick={() => handleUpdate("publish")} disabled={saving} className="bg-[#71C9CE] hover:bg-[#5bb8bd] text-white rounded-xl shadow-md shadow-[#71C9CE]/20 transition-all font-semibold">
+                        {saving ? "Saving..." : "Publish"}
+                    </Button>
+                </div>
             </div>
-            <div>
-                <strong className="text-2xl font-['Arial',sans-serif]">
-                    Edit Post
-                </strong>
-                <input
-                    className="w-full border-2 border-slate-50 p-2 text-xl font-medium focus:outline-none focus:border-slate-300"
-                    type="text"
-                    placeholder="Enter title here"
-                    value={title}
-                    required
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-            </div>
-            <div>
-                <Tiptap
-                    mode="edit"
-                    content={content}
-                    onChange={(json) => setContent(json)}
-                />
+
+            <div className="bg-white/70 border border-[#CBF1F5] rounded-3xl p-6 sm:p-10 backdrop-blur-md shadow-xl shadow-[#A6E3E9]/20 flex flex-col gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 border-b border-[#A6E3E9]/40 pb-6">
+                    <div className="p-3 bg-[#CBF1F5] rounded-xl text-[#71C9CE] shrink-0 w-fit">
+                        <Edit3 className="w-6 h-6" />
+                    </div>
+                    <input
+                        className="w-full bg-transparent text-3xl font-extrabold text-slate-900 placeholder:text-slate-300 focus:outline-none tracking-tight"
+                        type="text"
+                        placeholder="Enter your amazing title..."
+                        value={title}
+                        required
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+                </div>
+                
+                <div className="min-h-[500px]">
+                    <Tiptap
+                        mode="edit"
+                        content={content}
+                        onChange={(json) => setContent(json)}
+                    />
+                </div>
             </div>
         </div>
     );
