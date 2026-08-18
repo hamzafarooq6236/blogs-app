@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { changePasswordAction } from "@/actions/auth";
+import { KeyRound, ArrowLeft } from "lucide-react";
 
 export default function ChangePasswordPage() {
     const router = useRouter();
@@ -48,63 +49,83 @@ export default function ChangePasswordPage() {
     }
 
     return (
-        <div className="min-h-screen flex justify-center items-center text-black">
-            <form
-                onSubmit={handleChangePassword}
-                className="bg-amber-200 text-black flex flex-col w-80 border-3 p-4 rounded-2xl gap-3"
-            >
-                <h2 className="text-xl font-bold text-center">Change Password</h2>
-
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="password" className="font-semibold text-sm">
-                        New Password
-                    </label>
-                    <input
-                        id="password"
-                        type="password"
-                        placeholder="Enter new password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="border-2 border-gray-400 p-2 rounded bg-white"
-                        required
-                    />
-                </div>
-
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="confirmPassword" className="font-semibold text-sm">
-                        Confirm Password
-                    </label>
-                    <input
-                        id="confirmPassword"
-                        type="password"
-                        placeholder="Confirm new password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="border-2 border-gray-400 p-2 rounded bg-white"
-                        required
-                    />
-                </div>
-
-                {message && (
-                    <div
-                        className={`px-3 py-2 rounded text-sm text-center ${
-                            isSuccess
-                                ? "bg-green-100 border border-green-400 text-green-700"
-                                : "bg-red-100 border border-red-400 text-red-700"
-                        }`}
-                    >
-                        {message}
+        <div className="flex flex-col items-center justify-center p-6 mt-10 font-sans relative">
+            <div className="w-full max-w-md p-8 bg-white/70 border border-[#CBF1F5] rounded-3xl backdrop-blur-md shadow-xl shadow-[#A6E3E9]/20">
+                
+                <div className="flex justify-center mb-6">
+                    <div className="w-16 h-16 bg-[#CBF1F5] rounded-2xl flex items-center justify-center text-[#71C9CE]">
+                        <KeyRound className="w-8 h-8" />
                     </div>
-                )}
+                </div>
 
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="border-2 border-black rounded-3xl px-4 cursor-pointer self-center py-1 mt-1 bg-amber-400 hover:bg-amber-500 font-semibold disabled:opacity-50"
+                <form
+                    onSubmit={handleChangePassword}
+                    className="flex flex-col gap-5"
                 >
-                    {loading ? "Updating..." : "Update Password"}
-                </button>
-            </form>
+                    <h2 className="text-2xl font-extrabold text-slate-800 text-center tracking-tight mb-2">Change Password</h2>
+
+                    <div className="flex flex-col gap-1.5">
+                        <label htmlFor="password" className="font-semibold text-sm text-slate-700 ml-1">
+                            New Password
+                        </label>
+                        <input
+                            id="password"
+                            type="password"
+                            placeholder="Enter new password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full bg-white border border-[#A6E3E9] focus:border-[#71C9CE] focus:ring-2 focus:ring-[#71C9CE]/20 text-slate-800 rounded-xl px-4 py-3 outline-none transition-all"
+                            required
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                        <label htmlFor="confirmPassword" className="font-semibold text-sm text-slate-700 ml-1">
+                            Confirm Password
+                        </label>
+                        <input
+                            id="confirmPassword"
+                            type="password"
+                            placeholder="Confirm new password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full bg-white border border-[#A6E3E9] focus:border-[#71C9CE] focus:ring-2 focus:ring-[#71C9CE]/20 text-slate-800 rounded-xl px-4 py-3 outline-none transition-all"
+                            required
+                        />
+                    </div>
+
+                    {message && (
+                        <div
+                            className={`px-4 py-3 rounded-xl text-sm font-medium text-center ${
+                                isSuccess
+                                    ? "bg-green-50 border border-[#71C9CE] text-[#3b9ea4]"
+                                    : "bg-red-50 border border-red-200 text-red-600"
+                            }`}
+                        >
+                            {message}
+                        </div>
+                    )}
+
+                    <div className="flex flex-col gap-3 mt-4">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#71C9CE] hover:bg-[#5bb8bd] disabled:bg-[#A6E3E9] text-white rounded-xl shadow-md shadow-[#71C9CE]/20 transition-all font-semibold"
+                        >
+                            {loading ? "Updating..." : "Update Password"}
+                        </button>
+                        
+                        <button
+                            type="button"
+                            onClick={() => router.push("/settings")}
+                            className="w-full flex items-center justify-center gap-2 py-3.5 bg-white hover:bg-[#CBF1F5]/30 text-slate-700 border border-[#A6E3E9] rounded-xl transition-all font-medium"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            Back to Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }
