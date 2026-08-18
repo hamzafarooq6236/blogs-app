@@ -5,9 +5,8 @@ export const users = pgTable("user", {
     id: text("id").primaryKey(),
     name: text("name"),
     email: text("email").notNull().unique(),
-    password: text("password").notNull(),
+    password: text("password"),
     emailVerified: timestamp("emailVerified"),
-    verificationToken: text("verificatonToken"),
     image: text("image"),
 });
 
@@ -63,3 +62,10 @@ export const sessions = pgTable("session", {
         .notNull(),
     expires: timestamp("expires").notNull(),
 });
+
+export const verificationTokens = pgTable("verificationToken",{
+    challengeId: text("challengeId").primaryKey().notNull(),
+    userId: text("userId").references(()=> users.id).notNull(),
+    verificationToken: text("verificationToken"),
+    otp: integer("otp"),
+})

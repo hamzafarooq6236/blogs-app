@@ -11,6 +11,14 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 import bcrypt from "bcryptjs";
+import { CredentialsSignin } from "next-auth";
+
+class CustomAuthError extends CredentialsSignin {
+  constructor(msg: string) {
+    super();
+    this.code = msg;
+  }
+}
 
 import { authConfig } from "@/auth.config";
 
@@ -68,7 +76,11 @@ export const {
           .where(eq(users.email, email));
 
         if (!user || !user.password) {
-          return null;
+          throw new CustomAuthError("Invalid email or password");
+        }
+
+        if (!user.emailVerified) {
+          throw new CustomAuthError("Please verify your email before logging in.");
         }
 
         const passwordMatch = await bcrypt.compare(
@@ -77,7 +89,7 @@ export const {
         );
 
         if (!passwordMatch) {
-          return null;
+          throw new CustomAuthError("Invalid email or password");
         }
 
         return {

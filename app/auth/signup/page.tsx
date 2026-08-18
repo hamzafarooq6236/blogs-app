@@ -14,7 +14,13 @@ interface FormInputs {
 }
 
 export default function SignUp() {
-    const { register, formState: { errors }, handleSubmit } = useForm<FormInputs>();
+    const { register, formState: { errors }, handleSubmit, reset } = useForm<FormInputs>({
+        defaultValues: {
+            name: "",
+            email: "",
+            password: ""
+        }
+    });
     const [message, setMessage] = useState<string | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -30,10 +36,12 @@ export default function SignUp() {
             } else {
                 setErrorMsg(res.error || "Signup failed");
             }
+            reset()
         } catch {
             setErrorMsg("An unexpected error occurred.");
         } finally {
             setIsLoading(false);
+            
         }
     }
 
