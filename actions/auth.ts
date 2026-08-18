@@ -6,6 +6,7 @@ import sgMail from "@sendgrid/mail";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { auth } from "@/lib/auth";
 
 export async function signUpAction(data: { name?: string; email: string; password: string }) {
     try {
@@ -288,7 +289,7 @@ export async function verifyOtpAction(otpInput: string, cid: string) {
 
 export async function resetPasswordAction(password: string, token: string) {
     if (!password || !token) {
-        return { success: false, error: "password and token are required" };
+        return { success: false, error: "password or link is invalid" };
     }
 
     try {
@@ -300,9 +301,9 @@ export async function resetPasswordAction(password: string, token: string) {
             .where(eq(verificationTokens.verificationToken, hashedToken))
             .limit(1);
 
-        const verifToken = existingTokens[0];
+        const verifyToken = existingTokens[0];
 
-        if (!verifToken) {
+        if (!verifyToken) {
             return { success: false, error: "Invalid Link or Expired Token" };
         }
 
@@ -311,15 +312,40 @@ export async function resetPasswordAction(password: string, token: string) {
         await db
             .update(users)
             .set({ password: hashedPassword, emailVerified: new Date() })
-            .where(eq(users.id, verifToken.userId));
+            .where(eq(users.id, verifyToken.userId));
 
         await db
             .delete(verificationTokens)
-            .where(eq(verificationTokens.userId, verifToken.userId));
+            .where(eq(verificationTokens.userId, verifyToken.userId));
 
         return { success: true, message: "Password reset successfully" };
     } catch (error: any) {
         console.error("Reset password error:", error);
+        return { success: false, error: "Internal server error" };
+    }
+}
+
+export async function changePasswordAction(password: string) {
+    if (!password) {
+        return { success: false, error: "password is required" };
+    }
+
+    try {
+        const session = await auth();
+        if (!session?.user?.id) {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await db
+            .update(users)
+            .set({ password: hashedPassword })
+            .where(eq(users.id, session.user.id));
+
+        return { success: true, message: "Password updated successfully" };
+    } catch (error: any) {
+        console.error("Change password error:", error);
         return { success: false, error: "Internal server error" };
     }
 }
