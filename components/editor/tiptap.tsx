@@ -30,7 +30,7 @@ export default function Tiptap({ onChange ,mode,content}: BlogContent) {
 
         editorProps: {
             attributes: {
-                class: "bg-slate-100 min-h-[65vh] border rounded-md py-2 px-3 focus:outline-none [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:font-['Arial',sans-serif] [&_h1]:my-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:my-3 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:my-2 [&_p]:my-2"
+                class: `focus:outline-none font-sans text-slate-700 text-lg leading-relaxed [&_h1]:text-4xl [&_h1]:font-extrabold [&_h1]:text-slate-900 [&_h1]:mb-6 [&_h1]:mt-8 [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:text-slate-800 [&_h2]:mb-4 [&_h2]:mt-6 [&_h3]:text-2xl [&_h3]:font-bold [&_h3]:text-slate-800 [&_h3]:mb-3 [&_h3]:mt-5 [&_p]:my-4 [&_a]:text-[#71C9CE] [&_strong]:font-bold [&_strong]:text-slate-900 ${mode === "edit" ? "bg-white min-h-[65vh] border border-[#A6E3E9] rounded-2xl p-6 focus:ring-4 focus:ring-[#CBF1F5]/50 transition-all shadow-inner shadow-[#A6E3E9]/10" : ""}`
             }
         },
         editable: mode === "edit",
