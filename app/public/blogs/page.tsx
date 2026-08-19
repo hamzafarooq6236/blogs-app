@@ -1,10 +1,11 @@
+"use cache"
 import { getPublicBlogsAction } from "@/actions/blogs";
 import Link from "next/link";
 import { BookOpen, Sparkles, ArrowLeft, ArrowRight } from "lucide-react";
-
-export const dynamic = "force-dynamic";
+import { cacheLife } from "next/cache";
 
 export default async function PublicBlogsPage() {
+    cacheLife("seconds")
     const result = await getPublicBlogsAction();
     const blogs = result.success ? result.data : [];
 
@@ -19,7 +20,7 @@ export default async function PublicBlogsPage() {
             <div className="max-w-5xl mx-auto px-6 py-10 w-full z-10 relative">
                 <Link 
                     href="/"
-                    className="inline-flex items-center gap-2 text-slate-500 hover:text-[#71C9CE] transition-colors mb-10 font-medium text-sm"
+                    className="font-bold inline-flex items-center gap-2 text-slate-500 hover:text-[#263c3d] transition-colors mb-10 text-sm"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     Back to Home
@@ -31,7 +32,7 @@ export default async function PublicBlogsPage() {
                         <span>Community</span>
                     </div>
                     <h1 className="text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-tight">
-                        Public <span className="text-[#71C9CE]">Blogs</span>
+                        Public <span className="text-[#4f9093]">Blogs</span>
                     </h1>
                     <p className="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto font-light leading-relaxed">
                         Read the latest articles published by our amazing community of writers and thinkers.

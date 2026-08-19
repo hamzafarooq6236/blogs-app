@@ -1,11 +1,15 @@
+'use cache'
 import { getPublicBlogBySlugAction } from "@/actions/blogs";
 import Tiptap from "@/components/editor/tiptap";
 import { notFound } from "next/navigation";
 import { BookOpen, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { cacheLife } from "next/cache";
 
 export default async function PublicBlogPage({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } =await params;
+
+    cacheLife('minutes')
+    const { slug } = await params;
     const res = await getPublicBlogBySlugAction(slug);
     if (!res.success || !res.data) {
         notFound();
@@ -22,7 +26,7 @@ export default async function PublicBlogPage({ params }: { params: Promise<{ slu
             </div>
 
             <main className="max-w-4xl mx-auto py-8 px-6 relative z-10">
-                <Link 
+                <Link
                     href="/public/blogs"
                     className="inline-flex items-center gap-2 text-slate-500 hover:text-[#71C9CE] transition-colors mb-10 font-medium text-sm"
                 >
