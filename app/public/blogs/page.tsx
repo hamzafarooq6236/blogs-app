@@ -2,6 +2,8 @@ import { getPublicBlogsAction } from "@/actions/blogs";
 import Link from "next/link";
 import { BookOpen, Sparkles, ArrowLeft, ArrowRight } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function PublicBlogsPage() {
     const result = await getPublicBlogsAction();
     const blogs = result.success ? result.data : [];
