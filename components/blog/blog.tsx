@@ -15,7 +15,6 @@ interface BlogProps {
 
 export default function Blog({ title, slug, createdAt, updatedAt }: BlogProps) {
     const router = useRouter();
-    console.log(new Date(createdAt))
 
     async function handleDelete() {
         const confirmed = confirm(`Are you sure you want to delete "${title}"?`);

@@ -35,8 +35,6 @@ export async function uploadImageAction(formData: FormData): Promise<{
     const fileExt = file.name.split(".").pop() || "jpg";
     const uniqueFilename = `${userId}/${Date.now()}-${randomUUID()}.${fileExt}`;
 
-
-    console.log("upload")
     const { data, error } = await supabase.storage
       .from(BUCKET_NAME as string)
       .upload(uniqueFilename, buffer, {

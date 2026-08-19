@@ -37,8 +37,7 @@ export async function createBlogAction(data: { title: string; content: JSONConte
         }
         const userId = session.user.id;
         const { title, content, status } = data;
-        console.log("before db:")
-        console.log(">>> [createBlogAction] Received content:", JSON.stringify(content, null, 2));
+
         if (!title) {
             return { success: false, error: "Title is required" };
         }
@@ -60,8 +59,6 @@ export async function createBlogAction(data: { title: string; content: JSONConte
                 publishedAt,
             })
             .returning();
-
-        console.log(">>> [createBlogAction] Database returned blog content:", JSON.stringify(blog?.content, null, 2));
 
         revalidatePath("/blogs");
         return { success: true, data: blog };
@@ -122,7 +119,6 @@ export async function updateBlogAction(
         }
 
         const { title, content, status } = data;
-        console.log(">>> [updateBlogAction] Updating with content:", JSON.stringify(content, null, 2));
 
         const [updatedBlog] = await db
             .update(blogs)
@@ -137,8 +133,6 @@ export async function updateBlogAction(
             })
             .where(and(eq(blogs.slug, slug), eq(blogs.userId, session.user.id)))
             .returning();
-
-        console.log(">>> [updateBlogAction] Database returned blog content:", JSON.stringify(updatedBlog?.content, null, 2));
 
         revalidatePath("/blogs");
         revalidatePath(`/blogs/${slug}`);

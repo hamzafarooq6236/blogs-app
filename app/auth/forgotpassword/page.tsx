@@ -17,7 +17,6 @@ export default function ForgotPassword() {
         e.preventDefault();
 
         const resData = await forgotPasswordAction(email);
-        console.log(resData.cid);
 
         if (resData.success) {
             setMessage(resData.message || "OTP sent");

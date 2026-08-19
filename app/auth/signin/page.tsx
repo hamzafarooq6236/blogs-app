@@ -29,7 +29,6 @@ export default function SignIn() {
             });
 
             if (res?.error) {
-                console.log(res.code)
                 // NextAuth typically returns the Error message string directly in res.error if configured,
                 // or you can just parse the error message if needed.
                 const errorMessage = !res.code?.includes("verify")
