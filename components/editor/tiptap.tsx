@@ -5,14 +5,15 @@ import { useEditor, EditorContent, JSONContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Highlight from '@tiptap/extension-highlight'
 import TextAlign from '@tiptap/extension-text-align'
+import { Image } from '@tiptap/extension-image'
 import MenuBar from './menu-bar'
 
 interface BlogContent {
-    content?: JSONContent |null ;
+    content?: JSONContent | null;
     mode: "edit" | "view";
     onChange?: (content: JSONContent) => void;
 }
-export default function Tiptap({ onChange ,mode,content}: BlogContent) {
+export default function Tiptap({ onChange, mode, content }: BlogContent) {
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
@@ -24,7 +25,16 @@ export default function Tiptap({ onChange ,mode,content}: BlogContent) {
             TextAlign.configure({
                 types: ['heading', 'paragraph'],
             }),
+            Image.configure({
+                allowBase64: true,
+                resize: mode === "edit" ? {
+                    enabled: true,
+                    minWidth: 50,
+                    minHeight: 50,
+                } : false,
+            }),
         ],
+
         content: content ?? "",
         immediatelyRender: false,
 

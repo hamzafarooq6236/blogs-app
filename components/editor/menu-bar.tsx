@@ -1,5 +1,6 @@
 'use client'
 
+import { useCallback, useState } from "react"
 import { Editor, useEditorState } from "@tiptap/react"
 import {
     Heading1,
@@ -14,13 +15,18 @@ import {
     AlignCenter,
     AlignRight,
     AlignJustify,
+    ImagePlus,
+    Loader2,
 } from "lucide-react"
+import { uploadImageAction } from "@/actions/upload"
 
 interface MenuBarProps {
     editor: Editor | null
 }
 
 export default function MenuBar({ editor }: MenuBarProps) {
+    const [isUploading, setIsUploading] = useState(false)
+
     const editorState = useEditorState({
         editor,
         selector: ctx => {
@@ -61,6 +67,39 @@ export default function MenuBar({ editor }: MenuBarProps) {
             }
         },
     })
+
+    const handleInsertImage = useCallback(() => {
+        if (!editor || isUploading) return
+
+        const input = document.createElement('input')
+        input.type = 'file'
+        input.accept = 'image/*'
+        input.onchange = async (e: Event) => {
+            const target = e.target as HTMLInputElement
+            const file = target.files?.[0]
+            if (!file) return
+
+            try {
+                setIsUploading(true)
+                const formData = new FormData()
+                formData.append('file', file)
+
+                const result = await uploadImageAction(formData)
+
+                if (result.success && result.url) {
+                    editor.chain().focus().setImage({ src: result.url }).run()
+                } else {
+                    alert(result.error || "Failed to upload image to Supabase.")
+                }
+            } catch (err: any) {
+                console.error("Image upload failed:", err)
+                alert(err?.message || "An error occurred while uploading the image.")
+            } finally {
+                setIsUploading(false)
+            }
+        }
+        input.click()
+    }, [editor, isUploading])
 
     if (!editor || !editorState) {
         return null
@@ -136,7 +175,7 @@ export default function MenuBar({ editor }: MenuBarProps) {
 
     return (
         <div className="control-group">
-            <div className="button-group flex flex-wrap gap-2 bg-slate-200 py-2 px-3 rounded-md">
+            <div className="button-group flex flex-wrap items-center gap-2 bg-slate-200 py-2 px-3 rounded-md">
                 {options.map((option, index) => {
                     const IconComponent = option.icon
                     return (
@@ -154,6 +193,28 @@ export default function MenuBar({ editor }: MenuBarProps) {
                         </button>
                     )
                 })}
+
+                {/* Separator */}
+                <div className="w-px h-6 bg-slate-400/50 mx-1" />
+
+                {/* Insert Image Button */}
+                <button
+                    onClick={handleInsertImage}
+                    disabled={isUploading}
+                    type="button"
+                    className={`p-1.5 rounded transition-colors ${
+                        isUploading 
+                            ? 'bg-blue-100 text-blue-600 cursor-not-allowed' 
+                            : 'bg-white/80 hover:bg-white text-slate-800'
+                    }`}
+                    title={isUploading ? "Uploading image to Supabase..." : "Insert image"}
+                >
+                    {isUploading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                        <ImagePlus className="w-4 h-4" />
+                    )}
+                </button>
             </div>
         </div>
     )

@@ -27,13 +27,16 @@ export default function NewBlogPage() {
                 status = "private"
             }
         }
-        console.log(title);
-        console.log(content);
+        const serializedContent = JSON.parse(JSON.stringify(content));
+        const res = await createBlogAction({
+            title,
+            content: serializedContent,
+            status,
+        });
 
-        const res = await createBlogAction({ title, content, status });
-        console.log(res);
-
-        if (res.success) {
+        if (res.success && res.data?.slug) {
+            router.push(`/blogs/${res.data.slug}`);
+        } else if (res.success) {
             router.push("/dashboard");
         } else {
             alert(res.error || "Failed to save post");
@@ -58,7 +61,7 @@ export default function NewBlogPage() {
                             <p className="text-xs text-slate-500 font-medium">Create a new blog</p>
                         </div>
                     </div>
-                    
+
                     <div className="flex flex-wrap items-center gap-3">
                         <div className="flex items-center space-x-2 bg-white px-4 py-2.5 rounded-xl border border-[#A6E3E9]">
                             <Switch className="cursor-pointer data-[state=checked]:bg-[#71C9CE]" id="airplane-mode" onCheckedChange={setEnabled} onClick={() => setEnabled(!enabled)} />
@@ -72,15 +75,15 @@ export default function NewBlogPage() {
 
                 {/* Editor Area */}
                 <div className="bg-white/60 border border-[#CBF1F5] rounded-3xl p-6 sm:p-10 shadow-sm shadow-[#A6E3E9]/10 backdrop-blur-xl flex flex-col gap-8 min-h-[600px]">
-                    <input 
-                        className="w-full bg-transparent text-4xl sm:text-5xl font-extrabold text-slate-800 placeholder:text-slate-300 outline-none border-b border-transparent focus:border-[#CBF1F5] pb-2 transition-colors" 
-                        type="text" 
-                        placeholder="Enter title here" 
-                        required 
-                        autoFocus 
-                        onChange={(e) => { setTitle(e.target.value) }} 
+                    <input
+                        className="w-full bg-transparent text-4xl sm:text-5xl font-extrabold text-slate-800 placeholder:text-slate-300 outline-none border-b border-transparent focus:border-[#CBF1F5] pb-2 transition-colors"
+                        type="text"
+                        placeholder="Enter title here"
+                        required
+                        autoFocus
+                        onChange={(e) => { setTitle(e.target.value) }}
                     />
-                    
+
                     <div className="flex-1 w-full text-slate-800">
                         <Tiptap mode="edit" onChange={(json) => {
                             setContent(json);

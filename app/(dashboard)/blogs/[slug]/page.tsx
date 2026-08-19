@@ -31,7 +31,7 @@ export default async function ReadBlog({
             <div className="bg-white/80 border border-[#CBF1F5] rounded-[2rem] p-8 sm:p-12 backdrop-blur-md shadow-xl shadow-[#A6E3E9]/20 prose prose-slate max-w-none prose-headings:text-slate-800 prose-a:text-[#71C9CE] hover:prose-a:text-[#5bb8bd]">
                 <Tiptap
                     mode="view"
-                    content={res.data.content ?? ""}
+                    content={res.data.content}
                 />
             </div>
         </div>

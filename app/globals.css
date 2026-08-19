@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import "../node_modules/shadcn/dist/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -131,4 +131,115 @@ body {
   html {
     @apply font-sans;
   }
+}
+
+/* TipTap Resizable Image Styles */
+[data-resize-container] {
+  position: relative;
+  margin: 1rem 0;
+  user-select: none;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+[data-resize-wrapper] {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+  max-width: 100%;
+}
+
+[data-resize-wrapper] img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+/* Hover or selection outline around resizable image (only in edit mode) */
+.ProseMirror[contenteditable="true"] [data-resize-wrapper]:hover,
+.ProseMirror[contenteditable="true"] .ProseMirror-selectednode [data-resize-wrapper],
+[data-resize-container][data-resize-state="true"] [data-resize-wrapper] {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* Resize Handles */
+[data-resize-handle] {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: #3b82f6;
+  border: 2px solid #ffffff;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  pointer-events: auto;
+}
+
+/* Show handles on hover, selected node, or actively resizing (only in edit mode) */
+.ProseMirror[contenteditable="true"] [data-resize-wrapper]:hover [data-resize-handle],
+.ProseMirror[contenteditable="true"] .ProseMirror-selectednode [data-resize-handle],
+[data-resize-container][data-resize-state="true"] [data-resize-handle] {
+  opacity: 1;
+}
+
+/* Position and Cursors for handles */
+[data-resize-handle="top-left"] {
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  cursor: nwse-resize;
+}
+
+[data-resize-handle="top-right"] {
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  cursor: nesw-resize;
+}
+
+[data-resize-handle="bottom-left"] {
+  bottom: 0;
+  left: 0;
+  transform: translate(-50%, 50%);
+  cursor: nesw-resize;
+}
+
+[data-resize-handle="bottom-right"] {
+  bottom: 0;
+  right: 0;
+  transform: translate(50%, 50%);
+  cursor: nwse-resize;
+}
+
+[data-resize-handle="top"] {
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  cursor: ns-resize;
+}
+
+[data-resize-handle="bottom"] {
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  cursor: ns-resize;
+}
+
+[data-resize-handle="left"] {
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+  cursor: ew-resize;
+}
+
+[data-resize-handle="right"] {
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
+  cursor: ew-resize;
 }

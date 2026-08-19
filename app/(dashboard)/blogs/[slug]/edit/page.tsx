@@ -65,7 +65,7 @@ export default function EditBlog({ params }: { params: Promise<{ slug: string }>
                 throw new Error(res.error || "Failed to update blog");
             }
 
-            router.push("/dashboard");
+            router.push(`/blogs/${slug}`);
         } catch (err: any) {
             console.error("Error updating blog:", err);
             alert(err.message || "Failed to update blog post");

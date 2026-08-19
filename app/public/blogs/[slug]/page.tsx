@@ -7,7 +7,6 @@ import Link from "next/link";
 export default async function PublicBlogPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } =await params;
     const res = await getPublicBlogBySlugAction(slug);
-    console.log(res)
     if (!res.success || !res.data) {
         notFound();
     }
@@ -45,7 +44,7 @@ export default async function PublicBlogPage({ params }: { params: Promise<{ slu
                 <div className="bg-white/80 border border-[#CBF1F5] rounded-[2rem] sm:p-12 backdrop-blur-md shadow-xl shadow-[#A6E3E9]/20 prose prose-slate max-w-none prose-headings:text-slate-800 prose-a:text-[#71C9CE] hover:prose-a:text-[#5bb8bd]">
                     <Tiptap
                         mode="view"
-                        content={blog.content ?? ""}
+                        content={blog.content}
                     />
                 </div>
             </main>

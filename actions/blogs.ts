@@ -7,6 +7,7 @@ import { eq, and, desc, count } from "drizzle-orm";
 import { randomUUID } from "crypto";
 import slugify from "slugify";
 import { revalidatePath } from "next/cache";
+import { JSONContent } from "@tiptap/react";
 
 export async function getBlogsAction() {
     try {
@@ -28,15 +29,16 @@ export async function getBlogsAction() {
     }
 }
 
-export async function createBlogAction(data: { title: string; content?: any; status?: string }) {
+export async function createBlogAction(data: { title: string; content: JSONContent|null; status?: string }) {
     try {
         const session = await auth();
         if (!session?.user?.id) {
             return { success: false, error: "Unauthorized" };
         }
-
         const userId = session.user.id;
         const { title, content, status } = data;
+        console.log("before db:")
+        console.log(">>> [createBlogAction] Received content:", JSON.stringify(content, null, 2));
         if (!title) {
             return { success: false, error: "Title is required" };
         }
@@ -58,6 +60,8 @@ export async function createBlogAction(data: { title: string; content?: any; sta
                 publishedAt,
             })
             .returning();
+
+        console.log(">>> [createBlogAction] Database returned blog content:", JSON.stringify(blog?.content, null, 2));
 
         revalidatePath("/blogs");
         return { success: true, data: blog };
@@ -118,6 +122,7 @@ export async function updateBlogAction(
         }
 
         const { title, content, status } = data;
+        console.log(">>> [updateBlogAction] Updating with content:", JSON.stringify(content, null, 2));
 
         const [updatedBlog] = await db
             .update(blogs)
@@ -132,6 +137,8 @@ export async function updateBlogAction(
             })
             .where(and(eq(blogs.slug, slug), eq(blogs.userId, session.user.id)))
             .returning();
+
+        console.log(">>> [updateBlogAction] Database returned blog content:", JSON.stringify(updatedBlog?.content, null, 2));
 
         revalidatePath("/blogs");
         revalidatePath(`/blogs/${slug}`);

@@ -1,3 +1,4 @@
+import { JSONContent } from "@tiptap/react";
 import { sql } from "drizzle-orm";
 import { pgTable, text, timestamp, primaryKey, integer, uuid, jsonb, check, index, uniqueIndex } from "drizzle-orm/pg-core";
 
@@ -42,7 +43,7 @@ export const blogs = pgTable("blog", {
     title: text("title"),
     slug: text("slug").notNull(),
     coverImagePath: text("coverImagePath"),
-    content: jsonb("content"),
+    content: jsonb("content").$type<JSONContent>(),
     status: text("status").default("draft").notNull(),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
     updatedAt: timestamp("updatedAt").notNull().defaultNow(),
