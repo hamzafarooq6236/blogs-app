@@ -59,7 +59,8 @@ export default function EditBlog({ params }: { params: Promise<{ slug: string }>
         }
         setSaving(true);
         try {
-            const res = await updateBlogAction(slug, { title, content, status });
+            const serializedContent = JSON.parse(JSON.stringify(content))
+            const res = await updateBlogAction(slug, { title, content:serializedContent, status });
 
             if (!res.success) {
                 throw new Error(res.error || "Failed to update blog");
