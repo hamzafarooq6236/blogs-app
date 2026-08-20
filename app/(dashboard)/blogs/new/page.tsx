@@ -52,7 +52,8 @@ export default function NewBlogPage() {
         if (!topic || topic.trim().length < 5) return;
         console.log(topic);
         const res = await getAIContentAction(topic);
-        if (res?.success && res.data) {
+        if (res?.success && res.data && res.title) {
+            setTitle(res.title);
             setContent(res.data);
             setIsOpen(false);
         } else {
@@ -96,6 +97,7 @@ export default function NewBlogPage() {
                         className="w-full bg-transparent text-4xl sm:text-5xl font-extrabold text-slate-800 placeholder:text-slate-300 outline-none border-b border-transparent focus:border-[#CBF1F5] pb-2 transition-colors"
                         type="text"
                         placeholder="Enter title here"
+                        value={title}
                         required
                         autoFocus
                         onChange={(e) => { setTitle(e.target.value) }}

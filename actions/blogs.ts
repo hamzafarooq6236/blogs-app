@@ -1,5 +1,6 @@
 "use server";
-
+import { generateText } from "ai";
+import { google } from "@ai-sdk/google";
 import { db } from "@/db";
 import { blogs } from "@/db/schema";
 import { auth } from "@/lib/auth";
@@ -260,21 +261,28 @@ export async function getPublicBlogBySlugAction(slug: string) {
     }
 }
 
-export async function getAIContentAction(topic: string): Promise<{ success: boolean; data?: JSONContent | null; error?: string }> {
+export async function getAIContentAction(topic: string): Promise<{ success: boolean; data?: JSONContent | null; title?: string; error?: string }> {
     try {
-        const response = await gemini.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: `
-Create a blog article about:
 
-${topic}
 
-Return ONLY JSON.
+        const { text } = await generateText({
+            model: google("gemini-2.5-flash"),
+            system: `
+You are an AI blog content generator.
 
-The JSON must be a valid Tiptap document.
+Your task is to generate a concise blog article based on the user's topic.
+
+Return the result as a structured JSON object with exactly these fields:
+
+{
+  "title": "string",
+  "content": {
+    // Return a valid Tiptap document.
+  }
+}
+
 
 Allowed nodes:
-
 - doc
 - heading
 - paragraph
@@ -283,32 +291,46 @@ Allowed nodes:
 - listItem
 - text
 
-Allowed marks:
-
-- bold
-- italic
-
 Rules:
-
-1. Root must have type "doc".
-2. Use proper Tiptap node structure.
-3. Heading must contain attrs.level.
-4. Paragraphs contain text nodes.
-5. Do not use Markdown.
-6. Do not wrap the JSON in markdown code fences.
-7. Do not add properties that are not part of the Tiptap structure.
+1. "title":
+    - Generate a clear, engaging, SEO-friendly title.
+    - Keep the title concise.
+    - Do NOT include the title inside the Tiptap content.
+2. "content":
+    - Must be a valid Tiptap JSON document.
+    - The root node must be:
+    {
+        "type": "doc",
+        "content": [...]
+    }
+    - Maximum 100 words total.
+    - Do not exceed 100 words.
+    - Root must be type "doc".
+    - Headings must have attrs.level.
+    - Heading levels can only be 1, 2, or 3.
+    - Paragraphs contain text nodes.
+    - List items contain paragraphs.
+    - Do not generate Markdown.
+    - Do not generate HTML.
+    - Do not generate images.
+    - Do not add unknown node types.
+    - Do not add unknown attributes.
+Always return the title and Tiptap content as separate fields.
 `,
-            config: {
-                responseMimeType: "application/json",
-            },
+            prompt: `Create a high-quality blog article about: ${topic}`
+
         });
 
-        if (!response.text) {
+        if (!text) {
             return { success: false, error: "No content was generated.", data: null };
         }
 
-        const parsedContent: JSONContent = JSON.parse(response.text);
-        return { success: true, data: parsedContent };
+        const cleanedText = text.replace(/```json\n?|```/g, "").trim();
+        const parsedContent = JSON.parse(cleanedText);
+        const title:string = parsedContent.title;
+        const tiptapDoc: JSONContent = parsedContent.content
+        console.log(cleanedText)
+        return { success: true, data: tiptapDoc, title: title };
     } catch (error: any) {
         console.error("Error generating AI Content:", error);
         return { success: false, error: error.message || "Error generating AI Content", data: null };
