@@ -101,30 +101,25 @@ export const {
     }),
   ],
 
-  session: {
-    strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 7,
-  },
+  
 
-  trustHost: true,
+  // callbacks: {
+  //   async jwt({ token, user }) {
+  //     if (user) {
+  //       token.id = user.id;
+  //     }
 
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
+  //     return token;
+  //   },
 
-      return token;
-    },
+  //   async session({ session, token }) {
+  //     if (session.user) {
+  //       session.user.id =
+  //         (token.id as string) ||
+  //         (token.sub as string);
+  //     }
 
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id =
-          (token.id as string) ||
-          (token.sub as string);
-      }
-
-      return session;
-    },
-  },
+  //     return session;
+  //   },
+  // },
 });

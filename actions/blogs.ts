@@ -9,6 +9,7 @@ import slugify from "slugify";
 import { revalidatePath } from "next/cache";
 import { JSONContent } from "@tiptap/react";
 import { gemini } from "@/lib/ai/gemini";
+import { redirect } from "next/navigation";
 
 export async function getBlogsAction() {
     try {
@@ -173,15 +174,11 @@ export async function deleteBlogAction(slug: string) {
 }
 
 export async function getDashboardStatsAction() {
+    const session = await auth();
+    if (!session?.user?.id) {
+        redirect("/")
+    }
     try {
-        const session = await auth();
-        if (!session?.user?.id) {
-            return {
-                success: false,
-                error: "Unauthorized",
-                stats: { total: 0, draft: 0, public: 0, private: 0 },
-            };
-        }
 
         const userId = session.user.id;
 
