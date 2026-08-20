@@ -18,7 +18,7 @@ export default async function PublicBlogsPage() {
             </div>
 
             <div className="max-w-5xl mx-auto px-6 py-10 w-full z-10 relative">
-                <Link 
+                <Link
                     href="/"
                     className="font-bold inline-flex items-center gap-2 text-slate-500 hover:text-[#263c3d] transition-colors mb-10 text-sm"
                 >
@@ -38,7 +38,7 @@ export default async function PublicBlogsPage() {
                         Read the latest articles published by our amazing community of writers and thinkers.
                     </p>
                 </div>
-                
+
                 {result.error && (
                     <div className="bg-red-50 text-red-600 border border-red-200 p-4 rounded-2xl mb-12 text-center text-sm font-medium shadow-sm">
                         {result.error}
@@ -71,8 +71,8 @@ export default async function PublicBlogsPage() {
                                     <span className="text-sm font-medium text-slate-500 bg-[#CBF1F5]/50 px-3 py-1.5 rounded-full">
                                         {blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : (blog.createdAt ? new Date(blog.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '')}
                                     </span>
-                                    <Link 
-                                        href={`/public/blogs/${blog.slug}`} 
+                                    <Link
+                                        href={`/public/blogs/${blog.slug}`}
                                         className="inline-flex items-center gap-1.5 text-[#71C9CE] hover:text-[#5bb8bd] font-semibold text-sm transition-colors"
                                     >
                                         Read post <ArrowRight className="w-4 h-4" />

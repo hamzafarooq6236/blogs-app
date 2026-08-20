@@ -1,8 +1,9 @@
 "use client"
-import { createBlogAction } from "@/actions/blogs";
+import { createBlogAction, getAIContentAction } from "@/actions/blogs";
 import Tiptap from "@/components/editor/tiptap";
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button";
+import TopicPrompt from "@/components/ai/topicPrompt"
 import { JSONContent } from "@tiptap/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -13,6 +14,7 @@ export default function NewBlogPage() {
     const [enabled, setEnabled] = useState(false);
     const router = useRouter();
     const [title, setTitle] = useState<string>("");
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const [content, setContent] = useState<JSONContent | null>(null);
 
     async function save(status: string) {
@@ -40,6 +42,21 @@ export default function NewBlogPage() {
             router.push("/dashboard");
         } else {
             alert(res.error || "Failed to save post");
+        }
+    }
+
+    async function generateContent(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const topic = formData.get("topic") as string;
+        if (!topic || topic.trim().length < 5) return;
+        console.log(topic);
+        const res = await getAIContentAction(topic);
+        if (res?.success && res.data) {
+            setContent(res.data);
+            setIsOpen(false);
+        } else {
+            alert(res?.error || "Failed to generate content");
         }
     }
 
@@ -84,8 +101,12 @@ export default function NewBlogPage() {
                         onChange={(e) => { setTitle(e.target.value) }}
                     />
 
-                    <div className="flex-1 w-full text-slate-800">
-                        <Tiptap mode="edit" onChange={(json) => {
+                    {isOpen && <TopicPrompt generateContent={generateContent} onClose={() => setIsOpen(false)} />}
+                    <div className="flex-1 w-full text-slate-800 space-y-1">
+                        <div className="text-black flex justify-end">
+                            <button className="cursor-pointer rounded-2xl border-2 border-amber-200 bg-amber-50 p-1" onClick={() => setIsOpen(!isOpen)}>Generate Content</button>
+                        </div>
+                        <Tiptap mode="edit" content={content} onChange={(json) => {
                             setContent(json);
                         }} />
                     </div>

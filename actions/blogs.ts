@@ -8,6 +8,7 @@ import { randomUUID } from "crypto";
 import slugify from "slugify";
 import { revalidatePath } from "next/cache";
 import { JSONContent } from "@tiptap/react";
+import { gemini } from "@/lib/ai/gemini";
 
 export async function getBlogsAction() {
     try {
@@ -29,7 +30,7 @@ export async function getBlogsAction() {
     }
 }
 
-export async function createBlogAction(data: { title: string; content: JSONContent|null; status?: string }) {
+export async function createBlogAction(data: { title: string; content: JSONContent | null; status?: string }) {
     try {
         const session = await auth();
         if (!session?.user?.id) {
@@ -259,5 +260,60 @@ export async function getPublicBlogBySlugAction(slug: string) {
     } catch (error: any) {
         console.error("Error fetching public blog by slug action:", error);
         return { success: false, error: error.message || "Failed to fetch public blog post", data: null };
+    }
+}
+
+export async function getAIContentAction(topic: string): Promise<{ success: boolean; data?: JSONContent | null; error?: string }> {
+    try {
+        const response = await gemini.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: `
+Create a blog article about:
+
+${topic}
+
+Return ONLY JSON.
+
+The JSON must be a valid Tiptap document.
+
+Allowed nodes:
+
+- doc
+- heading
+- paragraph
+- bulletList
+- orderedList
+- listItem
+- text
+
+Allowed marks:
+
+- bold
+- italic
+
+Rules:
+
+1. Root must have type "doc".
+2. Use proper Tiptap node structure.
+3. Heading must contain attrs.level.
+4. Paragraphs contain text nodes.
+5. Do not use Markdown.
+6. Do not wrap the JSON in markdown code fences.
+7. Do not add properties that are not part of the Tiptap structure.
+`,
+            config: {
+                responseMimeType: "application/json",
+            },
+        });
+
+        if (!response.text) {
+            return { success: false, error: "No content was generated.", data: null };
+        }
+
+        const parsedContent: JSONContent = JSON.parse(response.text);
+        return { success: true, data: parsedContent };
+    } catch (error: any) {
+        console.error("Error generating AI Content:", error);
+        return { success: false, error: error.message || "Error generating AI Content", data: null };
     }
 }
