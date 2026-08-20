@@ -261,26 +261,54 @@ export async function getPublicBlogBySlugAction(slug: string) {
     }
 }
 
-export async function getAIContentAction(topic: string): Promise<{ success: boolean; data?: JSONContent | null; title?: string; error?: string }> {
-    try {
+export interface GenerateContentOptions {
+    topic: string;
+    tone: string;
+    length: string;
+    language: string;
+    audience: string;
+    style: string;
+    keywords?: string;
+    additionalInstructions?: string;
+}
 
+export async function getAIContentAction(options: GenerateContentOptions): Promise<{ success: boolean; data?: JSONContent | null; title?: string; error?: string }> {
+    try {
+        const { topic, tone, length, language, audience, style, keywords, additionalInstructions } = options;
+
+        const wordLimits: Record<string, number> = {
+            short: 100,
+            medium: 300,
+            long: 600,
+        };
+        const maxWords = wordLimits[length] || 300;
+
+        const dynamicInstructions: string[] = [];
+
+        if (tone) dynamicInstructions.push(`Write in a ${tone} tone.`);
+        if (language && language !== "English") dynamicInstructions.push(`Write the entire article in ${language}.`);
+        if (audience) dynamicInstructions.push(`Target audience: ${audience}.`);
+        if (style) dynamicInstructions.push(`Structure the content as a ${style}.`);
+        if (keywords && keywords.trim()) dynamicInstructions.push(`Naturally incorporate these keywords throughout the article: ${keywords}.`);
+        if (additionalInstructions && additionalInstructions.trim()) dynamicInstructions.push(`Additional instructions: ${additionalInstructions}`);
 
         const { text } = await generateText({
             model: google("gemini-2.5-flash"),
             system: `
 You are an AI blog content generator.
 
-Your task is to generate a concise blog article based on the user's topic.
+Your task is to generate a blog article based on the user's topic.
+
+${dynamicInstructions.join("\n")}
 
 Return the result as a structured JSON object with exactly these fields:
 
 {
-  "title": "string",
-  "content": {
-    // Return a valid Tiptap document.
-  }
+    "title": "string",
+    "content": {
+        // Return a valid Tiptap document.
+    }
 }
-
 
 Allowed nodes:
 - doc
@@ -303,8 +331,8 @@ Rules:
         "type": "doc",
         "content": [...]
     }
-    - Maximum 100 words total.
-    - Do not exceed 100 words.
+    - Maximum ${maxWords} words total.
+    - Do not exceed ${maxWords} words.
     - Root must be type "doc".
     - Headings must have attrs.level.
     - Heading levels can only be 1, 2, or 3.
@@ -318,7 +346,6 @@ Rules:
 Always return the title and Tiptap content as separate fields.
 `,
             prompt: `Create a high-quality blog article about: ${topic}`
-
         });
 
         if (!text) {
@@ -327,9 +354,9 @@ Always return the title and Tiptap content as separate fields.
 
         const cleanedText = text.replace(/```json\n?|```/g, "").trim();
         const parsedContent = JSON.parse(cleanedText);
-        const title:string = parsedContent.title;
-        const tiptapDoc: JSONContent = parsedContent.content
-        console.log(cleanedText)
+        const title: string = parsedContent.title;
+        const tiptapDoc: JSONContent = parsedContent.content;
+        console.log(cleanedText);
         return { success: true, data: tiptapDoc, title: title };
     } catch (error: any) {
         console.error("Error generating AI Content:", error);

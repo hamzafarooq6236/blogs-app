@@ -1,5 +1,6 @@
 "use client"
 import { createBlogAction, getAIContentAction } from "@/actions/blogs";
+import type { GenerateContentOptions } from "@/actions/blogs";
 import Tiptap from "@/components/editor/tiptap";
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,7 @@ import { JSONContent } from "@tiptap/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Sparkles } from "lucide-react";
 
 export default function NewBlogPage() {
     const [enabled, setEnabled] = useState(false);
@@ -45,13 +46,8 @@ export default function NewBlogPage() {
         }
     }
 
-    async function generateContent(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const topic = formData.get("topic") as string;
-        if (!topic || topic.trim().length < 5) return;
-        console.log(topic);
-        const res = await getAIContentAction(topic);
+    async function generateContent(options: GenerateContentOptions) {
+        const res = await getAIContentAction(options);
         if (res?.success && res.data && res.title) {
             setTitle(res.title);
             setContent(res.data);
@@ -105,8 +101,14 @@ export default function NewBlogPage() {
 
                     {isOpen && <TopicPrompt generateContent={generateContent} onClose={() => setIsOpen(false)} />}
                     <div className="flex-1 w-full text-slate-800 space-y-1">
-                        <div className="text-black flex justify-end">
-                            <button className="cursor-pointer rounded-2xl border-2 border-amber-200 bg-amber-50 p-1" onClick={() => setIsOpen(!isOpen)}>Generate Content</button>
+                        <div className="flex justify-end mb-4">
+                            <button 
+                                className="cursor-pointer bg-gradient-to-r from-[#71C9CE] to-[#5bb8bd] hover:from-[#5bb8bd] hover:to-[#4aa8ad] text-white text-sm font-semibold py-2 px-5 rounded-xl shadow-md shadow-[#71C9CE]/20 transition-all flex items-center gap-2" 
+                                onClick={() => setIsOpen(!isOpen)}
+                            >
+                                <Sparkles className="w-4 h-4" />
+                                Generate Content
+                            </button>
                         </div>
                         <Tiptap mode="edit" content={content} onChange={(json) => {
                             setContent(json);
